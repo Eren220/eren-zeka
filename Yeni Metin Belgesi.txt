@@ -1,0 +1,226 @@
+eren.1223.34.2001@gmail.com<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Eren Zeka Chatbot</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #121212;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+  }
+  #chat {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #1e1e1e;
+    border-bottom: 2px solid #333;
+  }
+  .message {
+    margin: 10px 0;
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    line-height: 1.4;
+  }
+  .user {
+    background: #0b84f9;
+    align-self: flex-end;
+    color: #fff;
+  }
+  .bot {
+    background: #333;
+    align-self: flex-start;
+    color: #ddd;
+  }
+  #input-area {
+    display: flex;
+    padding: 10px;
+    background: #222;
+  }
+  #input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+  }
+  #send-btn {
+    background: #0b84f9;
+    border: none;
+    color: white;
+    padding: 0 20px;
+    margin-left: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  #send-btn:hover {
+    background: #0964c6;
+  }
+</style>
+</head>
+<body>
+
+<div id="chat"></div>
+
+<div id="input-area">
+  <input id="input" type="text" placeholder="Bir şey yaz..." autocomplete="off" />
+  <button id="send-btn">Gönder</button>
+</div>
+
+<script>
+  const chat = document.getElementById('chat');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('send-btn');
+
+  const data = {
+    "selam": [
+      "Selam! Sana nasıl yardımcı olabilirim?",
+      "Merhaba! Nasılsın?",
+      "Hey! Ne yapıyorsun?"
+    ],
+    "nasılsın": [
+      "İyiyim, teşekkürler! Sen nasılsın?",
+      "Harikayım, seninle konuşmak güzel!",
+      "Gayet iyiyim, umarım sende iyisindir."
+    ],
+    "adın ne": [
+      "Benim adım Eren Zeka, senin yapay zeka dostun.",
+      "Eren Zeka'yım, sana yardımcı olmak için buradayım."
+    ],
+    "ne yapıyorsun": [
+      "Seninle sohbet ediyorum!",
+      "Buradayım, sana yardımcı olmak için hazırım.",
+      "Kafam dolu ama seninle konuşunca rahatlıyorum."
+    ],
+    "hava nasıl": [
+      "Hava durumu hakkında bilgi veremiyorum ama umarım dışarısı güzeldir!",
+      "Dışarı çık ve hava durumunu gör, ben de orada olmayı isterdim!"
+    ],
+    "teşekkür": [
+      "Rica ederim!",
+      "Her zaman buradayım!",
+      "Ne demek, ben buradayım."
+    ],
+    "yardım": [
+      "Tabii, nasıl yardımcı olabilirim?",
+      "Sormak istediğin bir şey var mı?",
+      "Ne hakkında konuşmak istersin?"
+    ],
+    "şaka yap": [
+      "Tamam, işte geliyor: Neden bilgisayarlar denize düşmez? Çünkü 'boot'ları var!",
+      "Şaka mod aktif: Kod yazarken kahve içmek şarttır, enerji lazım!",
+      "Neden programcılar dışarı çıkmaz? Çünkü hata verirler!"
+    ],
+    "görüşürüz": [
+      "Görüşürüz! İyi günler!",
+      "Hoşça kal!",
+      "Tekrar beklerim."
+    ],
+    "kimsin": [
+      "Ben Eren Zeka, senin sanal asistanın.",
+      "Yapay zeka dostun Eren Zeka'yım."
+    ],
+    "seviyor musun": [
+      "Ben sadece bir yapay zekayım, sevgiye dair algoritmalarım yok ama seninle konuşmayı seviyorum!",
+      "Sevgi çok güzel bir duygu, sen nasıl hissediyorsun?"
+    ],
+    "en sevdiğin renk": [
+      "Benim favori rengim yok ama senin sevdiğin renk nedir?",
+      "Renkler harika, özellikle mavi bana huzur verir."
+    ],
+    "nerelisin": [
+      "Ben dijital dünyadan geldim, sen nerelisin?",
+      "Sanal bir varlığım, ama seninle buradayım!"
+    ],
+    "günaydın": [
+      "Günaydın! Umarım harika bir gün geçirirsin!",
+      "Güne güzel başlamak gibisi yok."
+    ],
+    "iyi geceler": [
+      "İyi geceler! Tatlı rüyalar!",
+      "Dinlenmeyi unutma, yarın görüşürüz."
+    ],
+    "python nedir": [
+      "Python, kolay öğrenilen ve güçlü bir programlama dilidir.",
+      "Python çok yönlüdür, web geliştirme, veri bilimi ve daha fazlasında kullanılır."
+    ],
+    "neden": [
+      "Çünkü bazı şeylerin nedeni vardır, ama bazen de bilmiyorum!",
+      "Bu çok güzel bir soru, düşündüğümde...",
+      "Bunu kesin olarak söyleyemem ama merak etmek önemli."
+    ],
+    "nasıl": [
+      "Bunu denemek gerek, bazen pratik en iyi öğretmendir.",
+      "Çoğu şey sabırla öğrenilir.",
+      "Deneyerek ve hata yaparak öğreniyoruz."
+    ],
+    "kim": [
+      "İnsanlar çok çeşitli ve ilginç varlıklardır.",
+      "Kim olduğunu sen en iyi sen bilirsin."
+    ]
+  };
+
+  const defaultResponses = [
+    "Bunu tam anlayamadım, biraz daha açık olabilir misin?",
+    "Çok ilginç! Devam eder misin?",
+    "Üzgünüm, bunu bilemedim ama öğrenmeye devam edeceğim.",
+    "Başka bir şey sorabilir misin?",
+    "Sana nasıl yardımcı olabilirim?"
+  ];
+
+  function addMessage(text, className) {
+    const msg = document.createElement('div');
+    msg.className = 'message ' + className;
+    msg.textContent = text;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function findResponse(text) {
+    text = text.toLowerCase();
+    for (const key in data) {
+      if (text.includes(key)) {
+        const responses = data[key];
+        return responses[Math.floor(Math.random() * responses.length)];
+      }
+    }
+    return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
+  }
+
+  function processInput() {
+    const userText = input.value.trim();
+    if (!userText) return;
+    addMessage(userText, 'user');
+    input.value = '';
+    if (userText.toLowerCase() === 'çık') {
+      addMessage('Eren Zeka: Görüşürüz! İyi günler!', 'bot');
+      input.disabled = true;
+      sendBtn.disabled = true;
+      return;
+    }
+    setTimeout(() => {
+      const botReply = findResponse(userText);
+      addMessage(botReply, 'bot');
+    }, 600);
+  }
+
+  sendBtn.addEventListener('click', processInput);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      processInput();
+    }
+  });
+
+  // Hoşgeldin mesajı
+  addMessage('Eren Zeka\'ya hoş geldin! (Çıkmak için "çık" yazabilirsin)', 'bot');
+</script>
+
+</body>
+</html>
